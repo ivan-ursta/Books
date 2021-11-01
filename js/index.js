@@ -1,3 +1,10 @@
+$('.column').on('click', function() {
+    $(this).toggleClass('open');
+    $('.menu').slideToggle(300);
+})
+
+
+
 $('#date-now').text(new Date().getFullYear());
 $('.menu li a').click(function() {
     $(this).closest('.menu').find('.active').removeClass('active');

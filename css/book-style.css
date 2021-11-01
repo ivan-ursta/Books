@@ -702,6 +702,9 @@ footer p {
     #humburger {
         display: block;
     }
+    .column.open .menu {
+        display: block;
+    }
 }
 
 @media (max-width: 576px) {
