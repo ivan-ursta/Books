@@ -1,9 +1,22 @@
 $('.column').on('click', function() {
     $(this).toggleClass('open');
     $('.menu').slideToggle(300);
+
+    if ($(this).hasClass('open')) {
+        $('#humburger').html('&times');
+    } else {
+        $('#humburger').html('&equiv;');
+    }
 })
 
-
+$('#readers-plus').on('click', function() {
+    $('#num-of-readers').text("You are " + ($(this).data().num + 1) + " reader now.");
+    let hrefBook = $('#see-more .book .book-hidden a.btn-read').attr('href');
+    $(this).attr("href", hrefBook);
+    setTimeout(function() {
+        return location.href = hrefBook;
+    }, 1500);
+});
 
 $('#date-now').text(new Date().getFullYear());
 $('.menu li a').click(function() {
