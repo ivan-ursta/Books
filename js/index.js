@@ -1,3 +1,8 @@
+$('.categories a').on('click', function() {
+    $(this).closest('.categories').find('.active').removeClass('active');
+    $(this).addClass('active');
+})
+
 $('.column').on('click', function() {
     $(this).toggleClass('open');
     $('.menu').slideToggle(300);
@@ -175,38 +180,39 @@ $('#customers-testimonials').owlCarousel({
     }
 });
 
+let category_url = "https://openlibrary.org/subjects/mystery_and_detective_stories.json";
 
-var category_url = "https://openlibrary.org/subjects/mystery_and_detective_stories.json";
+$(window).on('load', ajaxFunc(category_url));
 
-let bookDiv = '';
-
-$.ajax({
-        url: category_url,
-        dataType: "json",
-        beforeSend: function() {
-            $('.loader').show();
-        }
-    }).done(function(data) {
-            console.log(data);
-            $('.loader').hide();
-            if (data.ebook_count == 0) {
-                $('.row.books').addClass('justify-content-center my-40')
-                    .html('<h3>No books found</h3>');
-                return false;
+function ajaxFunc(category_url) {
+    let bookDiv = '';
+    $.ajax({
+            url: category_url,
+            dataType: "json",
+            beforeSend: function() {
+                $('.loader').show();
             }
+        }).done(function(data) {
+                console.log(data);
+                $('.loader').hide();
+                if (data.ebook_count == 0) {
+                    $('.row.books').addClass('justify-content-center my-40')
+                        .html('<h3>No books found</h3>');
+                    return false;
+                }
 
-            $.each(data.works, function(index, bookInfo) {
-                        console.log(bookInfo);
-                        if (bookInfo.authors.length == 1)
-                            var authorsInfo = `Author: <a href="https://openlibrary.org/${bookInfo.authors[0].key}/">${bookInfo.authors[0].name}</a>`;
-                        else {
-                            var authorsInfo = 'Authors: ';
-                            $.each(bookInfo.authors, function(i, author) {
-                                authorsInfo += `<a href="https://openlibrary.org/${author.key}/">${author.name}</a>, `;
-                            });
-                            authorsInfo = authorsInfo.slice(0, -2);
-                        }
-                        bookDiv += `<div class="book">
+                $.each(data.works, function(index, bookInfo) {
+                            console.log(bookInfo);
+                            if (bookInfo.authors.length == 1)
+                                var authorsInfo = `Author: <a href="https://openlibrary.org/${bookInfo.authors[0].key}/">${bookInfo.authors[0].name}</a>`;
+                            else {
+                                var authorsInfo = 'Authors: ';
+                                $.each(bookInfo.authors, function(i, author) {
+                                    authorsInfo += `<a href="https://openlibrary.org/${author.key}/">${author.name}</a>, `;
+                                });
+                                authorsInfo = authorsInfo.slice(0, -2);
+                            }
+                            bookDiv += `<div class="book">
 			<div class="book-title">${bookInfo.title.length < 50 ? bookInfo.title : bookInfo.title.slice(0, 60) + '...'}</div>
 			<div class="book-author">${authorsInfo}</div>
 			<div class="book-cover"><img src="https://covers.openlibrary.org/b/id/${bookInfo.cover_id}-M.jpg"></div>
@@ -221,4 +227,11 @@ $.ajax({
 }).fail(function () {
 	$('.loader').hide();
 	$('.row.books').addClass('justify-content-center error my-3').html('<h3 class="text-center">Loading of books failed...<br>An error has occurred.</h3>')
+});
+}
+
+$('.categories a').on('click', function() {
+    category_url = $(this).attr("href") + ".json";
+    ajaxFunc(category_url);
+    return false;
 });
